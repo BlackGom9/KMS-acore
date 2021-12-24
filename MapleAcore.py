@@ -205,9 +205,5 @@ mp_a_chd = mp_a[(mp_a['날짜'] >= sd) & (mp_a['날짜'] <= ed)]
 plt.figure(figsize = (10, 3))
 sns.lineplot(data = mp_a_chd, x = '날짜', y = '가격',ci = None)
 
-
-# In[ ]:
-
-
-
-
+day_o = ["월", "화", "수", "목", "금", "토", "일"]
+sns.boxplot(data = mp_a_chd, x = '요일', y = '가격', order = day_o)
