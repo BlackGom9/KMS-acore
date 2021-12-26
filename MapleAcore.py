@@ -21,6 +21,9 @@ mp_a.info()
 mp_a[mp_a['개수'] > 300] 
 # 최대 300개가 팔릴 수 있으므로 초과되는 값들을 확인
 
+mp_a.dropna(axis = 'rows') 
+#결측치 제거
+
 mp_a_m = np.mean(mp_a['가격'])
 mp_a_m
 # A코어 가격의 평균
@@ -52,8 +55,9 @@ plt.figure(figsize = (10, 3))
 f_a = sns.lineplot(data = mp_a, x = '날짜', y = '가격',ci = None)
 f_a.xaxis.set_major_locator(MonthLocator(interval = 1))
 
-mp_a.groupby('날짜')['가격'].mean().round().head()
-
+c_d = mp_a[(mp_a['날짜'] >= '2021-12-01') & (mp_a['날짜'] <= '2021-12-26')]
+c_d.groupby('날짜')['가격'].mean().round()
+#특정 날짜의 일별 평균 가격
 
 # * 21.01.31 스타포스 강화 비용 30% 할인 이벤트가 시작 될 때에는 약 4% 정도 증가했지만, 이벤트가 끝나고, 가격이 약 11% 정도 감소했다.
 # 
@@ -64,9 +68,29 @@ mp_a.groupby('날짜')['가격'].mean().round().head()
 # * 21.02.24 환생의 불꽃, 어빌리티 확률 조작 사건 관련 보상안을 공지하고 보상안을 수령하는 그 다음날인 21.02.25에 약 19% 정도 증가했다. 그리고 꾸준히 증가해서 약 30% 정도까지 증가했다.
 
 # ### 요일별 가격 변화
+plt.figure(figsize = (20, 10))
+box_plot = sns.boxplot(data = mp_a, x = '요일', y = '가격')
+ax = box_plot.axes
+lines = ax.get_lines()
+categories = ax.get_xticks()
 
-plt.figure(figsize = (18, 5))
-sns.boxplot(data = mp_a, x = '요일', y = '가격')
+for cat in categories:
+    # every 4th line at the interval of 6 is median line
+    # 0 -> p25 1 -> p75 2 -> lower whisker 3 -> upper whisker 4 -> p50 5 -> upper extreme value
+    y = round(lines[4+cat*6].get_ydata()[0],1) 
+
+    ax.text(
+        cat, 
+        y, 
+        f'{y}', 
+        ha='center', 
+        va='center', 
+        fontweight='bold', 
+        size=20,
+        color='white',
+        bbox=dict(facecolor='#445A64'))
+
+box_plot.figure.tight_layout()
 
 plt.figure(figsize = (18, 5))
 sns.lineplot(data = mp_a, x = '요일', y = '가격') #평균값으로 그래프(파란색)
@@ -80,7 +104,7 @@ sns.lineplot(data = mp_a, x = '요일', y = '가격',estimator = np.median) #중
 
 # ### 개수별 가격 변화
 
-plt.figure(figsize = (18, 2))
+plt.figure(figsize = (18, 5))
 sns.lineplot(data = mp_a, x = '개수', y = '가격', ci = None)
 
 
