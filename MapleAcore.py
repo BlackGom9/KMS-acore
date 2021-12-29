@@ -148,4 +148,26 @@ plt.figure(figsize = (10, 3))
 sns.lineplot(data = mp_a_chd, x = '날짜', y = '가격',ci = None)
 
 day_o = ["월", "화", "수", "목", "금", "토", "일"]
-sns.boxplot(data = mp_a_chd, x = '요일', y = '가격', order = day_o)
+plt.figure(figsize = (15, 5))
+box_plot2 = sns.boxplot(data = mp_a_chd, x = '요일', y = '가격', order = day_o)
+ax2 = box_plot2.axes
+lines = ax2.get_lines()
+categories = ax2.get_xticks()
+
+for cat in categories:
+    # every 4th line at the interval of 6 is median line
+    # 0 -> p25 1 -> p75 2 -> lower whisker 3 -> upper whisker 4 -> p50 5 -> upper extreme value
+    y = round(lines[4+cat*6].get_ydata()[0],1) 
+
+    ax2.text(
+        cat, 
+        y, 
+        f'{y}', 
+        ha='center', 
+        va='center', 
+        fontweight='bold', 
+        size=15,
+        color='white',
+        bbox=dict(facecolor='#445A64'))
+
+box_plot2.figure.tight_layout()
